@@ -23,7 +23,7 @@ function App() {
   const isAuthenticated = true;
   const user = {
     name: "kushal",
-    role: "admin",
+    role: "user",
   };
 
   return (
