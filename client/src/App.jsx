@@ -18,10 +18,17 @@ import PaymentSuccessPage from "./pages/shopping-view/Payment-Success";
 import SearchProducts from "./pages/shopping-view/Search";
 import CheckAuth from "./components/common/check-auth";
 import UnAuthPage from "./pages/unauth-page";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { checkAuth } from "./store/authSlice";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
