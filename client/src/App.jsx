@@ -36,7 +36,6 @@ function App() {
     return <div>Loading...</div>;
   }
 
-  console.log(isAuthenticated);
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
