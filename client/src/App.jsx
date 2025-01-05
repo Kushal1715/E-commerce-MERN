@@ -23,13 +23,20 @@ import { useEffect } from "react";
 import { checkAuth } from "./store/authSlice";
 
 function App() {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, user, isLoading } = useSelector(
+    (state) => state.auth
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  console.log(isAuthenticated);
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
