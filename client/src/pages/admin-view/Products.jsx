@@ -1,3 +1,4 @@
+import ProductImageUpload from "@/components/admin-view/image-upload";
 import CommonForm from "@/components/common/form";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +25,8 @@ const initialFormData = {
 const AdminProducts = () => {
   const [openAddProductsDialog, setOpenAddProductsDialog] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
+  const [imageFile, setImageFile] = useState(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -44,6 +47,12 @@ const AdminProducts = () => {
           <SheetHeader className="mb-6">
             <SheetTitle>Add New Product</SheetTitle>
           </SheetHeader>
+          <ProductImageUpload
+            imageFile={imageFile}
+            setImageFile={setImageFile}
+            uploadedImageUrl={uploadedImageUrl}
+            setUploadedImageUrl={setUploadedImageUrl}
+          />
           <CommonForm
             formControls={addProductFormElements}
             formData={formData}
