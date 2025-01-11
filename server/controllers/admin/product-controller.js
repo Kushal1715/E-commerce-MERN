@@ -1,4 +1,5 @@
 const { imageUploadUtil } = require("../../helpers/cloudinary");
+const Product = require("../../models/Product");
 
 const handleImageUpload = async (req, res) => {
   try {
@@ -19,4 +20,88 @@ const handleImageUpload = async (req, res) => {
   }
 };
 
-module.exports = { handleImageUpload };
+//add a product
+const addProduct = async (req, res) => {
+  try {
+    const {
+      image,
+      title,
+      description,
+      category,
+      brand,
+      price,
+      salePrice,
+      totalStock,
+      averageReview,
+    } = req.body;
+
+    const newlyCreatedProduct = new Product({
+      image,
+      title,
+      description,
+      category,
+      brand,
+      price,
+      salePrice,
+      totalStock,
+      averageReview,
+    });
+    await newlyCreatedProduct.save();
+
+    return res.status(201).json({
+      success: true,
+      data: newlyCreatedProduct,
+      message: "product added successfully",
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      success: false,
+      message: "some error occured",
+    });
+  }
+};
+
+// fetch all products
+const fetchProducts = async (req, res) => {
+  try {
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      success: false,
+      message: "some error occured",
+    });
+  }
+};
+
+// edit a product
+const editProduct = async (req, res) => {
+  try {
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      success: false,
+      message: "some error occured",
+    });
+  }
+};
+
+//delete product
+const deleteProduct = async (req, res) => {
+  try {
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      success: false,
+      message: "some error occured",
+    });
+  }
+};
+
+module.exports = {
+  handleImageUpload,
+  addProduct,
+  fetchProducts,
+  editProduct,
+  deleteProduct,
+};
