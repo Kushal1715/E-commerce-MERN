@@ -32,6 +32,7 @@ const AdminProducts = () => {
   const onSubmit = (event) => {
     event.preventDefault();
   };
+
   return (
     <>
       <div className="flex justify-end w-full mb-5">
