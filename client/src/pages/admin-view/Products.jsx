@@ -1,4 +1,5 @@
 import ProductImageUpload from "@/components/admin-view/image-upload";
+import AdminProductTile from "@/components/admin-view/product-tile";
 import CommonForm from "@/components/common/form";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,8 +41,10 @@ const AdminProducts = () => {
     dispatch(addProduct({ ...formData, image: uploadedImageUrl })).then(
       (data) => {
         if (data?.payload?.success) {
+          dispatch(getAllProducts());
           setOpenAddProductsDialog(false);
           setFormData(initialFormData);
+          setImageFile(null);
           toast({
             title: data?.payload?.message,
           });
@@ -49,12 +52,10 @@ const AdminProducts = () => {
       }
     );
   };
-  console.log(uploadedImageUrl);
+  console.log(products);
   useEffect(() => {
     dispatch(getAllProducts());
   }, [dispatch]);
-
-  console.log(formData);
 
   return (
     <>
@@ -63,7 +64,13 @@ const AdminProducts = () => {
           Add New Produt
         </Button>
       </div>
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4"></div>
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {products &&
+          products.length > 0 &&
+          products.map((product) => (
+            <AdminProductTile product={product} key={product._id} />
+          ))}
+      </div>
       <Sheet
         open={openAddProductsDialog}
         onOpenChange={() => setOpenAddProductsDialog(false)}
