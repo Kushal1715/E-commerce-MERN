@@ -10,7 +10,11 @@ import {
 } from "@/components/ui/sheet";
 import { addProductFormElements } from "@/config";
 import { useToast } from "@/hooks/use-toast";
-import { addProduct, getAllProducts } from "@/store/productSlice";
+import {
+  addProduct,
+  deleteProduct,
+  getAllProducts,
+} from "@/store/productSlice";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -57,6 +61,17 @@ const AdminProducts = () => {
     dispatch(getAllProducts());
   }, [dispatch]);
 
+  const handleDelete = (id) => {
+    dispatch(deleteProduct(id)).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(getAllProducts());
+        toast({
+          title: data?.payload?.message,
+        });
+      }
+    });
+  };
+
   return (
     <>
       <div className="flex justify-end w-full mb-5">
@@ -68,7 +83,11 @@ const AdminProducts = () => {
         {products &&
           products.length > 0 &&
           products.map((product) => (
-            <AdminProductTile product={product} key={product._id} />
+            <AdminProductTile
+              product={product}
+              key={product._id}
+              handleDelete={handleDelete}
+            />
           ))}
       </div>
       <Sheet
