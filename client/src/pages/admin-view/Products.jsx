@@ -8,7 +8,10 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { addProductFormElements } from "@/config";
-import React, { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { addProduct, getAllProducts } from "@/store/productSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialFormData = {
   image: null,
@@ -28,10 +31,30 @@ const AdminProducts = () => {
   const [imageFile, setImageFile] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
   const [imageLoadingState, setImageLoadingState] = useState(false);
+  const dispatch = useDispatch();
+  const { products } = useSelector((state) => state.adminProducts);
+  const { toast } = useToast();
 
   const onSubmit = (event) => {
     event.preventDefault();
+    dispatch(addProduct({ ...formData, image: uploadedImageUrl })).then(
+      (data) => {
+        if (data?.payload?.success) {
+          setOpenAddProductsDialog(false);
+          setFormData(initialFormData);
+          toast({
+            title: data?.payload?.message,
+          });
+        }
+      }
+    );
   };
+  console.log(uploadedImageUrl);
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, [dispatch]);
+
+  console.log(formData);
 
   return (
     <>
@@ -55,6 +78,7 @@ const AdminProducts = () => {
             uploadedImageUrl={uploadedImageUrl}
             setUploadedImageUrl={setUploadedImageUrl}
             setImageLoadingState={setImageLoadingState}
+            imageLoadingState={imageLoadingState}
           />
           <CommonForm
             formControls={addProductFormElements}

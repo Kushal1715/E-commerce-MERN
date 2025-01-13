@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit");
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoading: false,
@@ -26,7 +26,7 @@ export const addProduct = createAsyncThunk(
 export const getAllProducts = createAsyncThunk(
   "/products/getAllProducts",
   async () => {
-    const result = await axios.post(
+    const result = await axios.get(
       "http://localhost:5000/api/admin/products/get"
     );
 
@@ -60,9 +60,25 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
-const ProductSlice = createSlice({
+const adminProductSlice = createSlice({
   name: "product",
   initialState,
   reducers: {},
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getAllProducts.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllProducts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.products = action.payload.data;
+      })
+      .addCase(getAllProducts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.products = [];
+      });
+  },
 });
+
+// export const { setUser } = authSlice.actions;
+export default adminProductSlice.reducer;
