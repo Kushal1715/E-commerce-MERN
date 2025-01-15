@@ -98,6 +98,12 @@ const AdminProducts = () => {
     });
   };
 
+  const formValid = () => {
+    return Object.keys(formData)
+      .map((key) => formData[key] !== "")
+      .every((item) => item);
+  };
+
   return (
     <>
       <div className="flex justify-end w-full mb-5">
@@ -147,6 +153,7 @@ const AdminProducts = () => {
             setFormData={setFormData}
             onSubmit={onSubmit}
             buttonText={currentEditedId ? "Edit" : "Add"}
+            isBtnDisabled={!formValid()}
           />
         </SheetContent>
       </Sheet>
