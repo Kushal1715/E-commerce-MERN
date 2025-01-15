@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   addProduct,
   deleteProduct,
+  editProduct,
   getAllProducts,
 } from "@/store/productSlice";
 import React, { useEffect, useState } from "react";
@@ -39,24 +40,49 @@ const AdminProducts = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.adminProducts);
   const { toast } = useToast();
+  const [currentEditedId, setCurrentEditedId] = useState(null);
+
+  console.log(uploadedImageUrl);
+  console.log(imageFile);
 
   const onSubmit = (event) => {
     event.preventDefault();
-    dispatch(addProduct({ ...formData, image: uploadedImageUrl })).then(
-      (data) => {
+    if (currentEditedId) {
+      dispatch(
+        editProduct({
+          formData: { ...formData, image: uploadedImageUrl },
+          id: currentEditedId,
+        })
+      ).then((data) => {
         if (data?.payload?.success) {
           dispatch(getAllProducts());
           setOpenAddProductsDialog(false);
           setFormData(initialFormData);
           setImageFile(null);
+          setCurrentEditedId(null);
+          setUploadedImageUrl("");
           toast({
-            title: data?.payload?.message,
+            title: "Product Edited successfully",
           });
         }
-      }
-    );
+      });
+    } else {
+      dispatch(addProduct({ ...formData, image: uploadedImageUrl })).then(
+        (data) => {
+          if (data?.payload?.success) {
+            dispatch(getAllProducts());
+            setOpenAddProductsDialog(false);
+            setFormData(initialFormData);
+            setImageFile(null);
+            setUploadedImageUrl("");
+            toast({
+              title: data?.payload?.message,
+            });
+          }
+        }
+      );
+    }
   };
-  console.log(products);
   useEffect(() => {
     dispatch(getAllProducts());
   }, [dispatch]);
@@ -87,16 +113,25 @@ const AdminProducts = () => {
               product={product}
               key={product._id}
               handleDelete={handleDelete}
+              setOpenCreateProductsDialog={setOpenAddProductsDialog}
+              setFormData={setFormData}
+              setCurrentEditedId={setCurrentEditedId}
             />
           ))}
       </div>
       <Sheet
         open={openAddProductsDialog}
-        onOpenChange={() => setOpenAddProductsDialog(false)}
+        onOpenChange={() => {
+          setOpenAddProductsDialog(false);
+          setFormData(initialFormData);
+          setCurrentEditedId(null);
+        }}
       >
         <SheetContent side="right" className="overflow-auto">
           <SheetHeader className="mb-6">
-            <SheetTitle>Add New Product</SheetTitle>
+            <SheetTitle>
+              {currentEditedId ? "Edit" : "Add"} New Product
+            </SheetTitle>
           </SheetHeader>
           <ProductImageUpload
             imageFile={imageFile}
@@ -111,7 +146,7 @@ const AdminProducts = () => {
             formData={formData}
             setFormData={setFormData}
             onSubmit={onSubmit}
-            buttonText="Add"
+            buttonText={currentEditedId ? "Edit" : "Add"}
           />
         </SheetContent>
       </Sheet>
