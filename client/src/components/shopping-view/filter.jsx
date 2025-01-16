@@ -16,7 +16,10 @@ const ProductFilter = () => {
             <div className="font-bold mb-1">{item}</div>
             <div>
               {filterOptions[item].map((option) => (
-                <div className="mb-2 flex items-center gap-2">
+                <div
+                  className="mb-2 flex items-center gap-2"
+                  key={option.label}
+                >
                   <Checkbox />
                   <Label className="">{option.label}</Label>
                 </div>

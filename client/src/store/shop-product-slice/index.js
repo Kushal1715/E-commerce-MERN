@@ -1,6 +1,7 @@
-const { createSlice } = require("@reduxjs/toolkit");
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
-const initialValue = {
+const initialState = {
   isLoading: false,
   products: [],
 };
@@ -18,7 +19,7 @@ export const fetchAllFilteredProducts = createAsyncThunk(
 
 const shoppingProductSlice = createSlice({
   name: "shoppingProduct",
-  initialValue,
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
