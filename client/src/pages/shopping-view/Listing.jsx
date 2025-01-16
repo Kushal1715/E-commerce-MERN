@@ -21,7 +21,6 @@ const ShoppingListing = () => {
           <h1 className="font-extrabold text-lg">All Products</h1>
           <div className="flex items-center gap-3">
             <h3 className="text-muted-foreground">10 Products</h3>
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button

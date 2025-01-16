@@ -3,7 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRouter = require("./routes/auth/auth-route");
-const productRouter = require("./routes/admin/product-routes");
+const adminProductRouter = require("./routes/admin/product-routes");
+const shopProductsRouter = require("./routes/shop/product-route");
 
 mongoose
   .connect("mongodb+srv://kushal:kushal@e-commerce-mern.cuod3.mongodb.net/")
@@ -31,6 +32,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/auth", authRouter);
-app.use("/api/admin/products", productRouter);
+app.use("/api/admin/products", adminProductRouter);
+app.use("/api/shop/products", shopProductsRouter);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
