@@ -44,11 +44,17 @@ const ShoppingListing = () => {
     }
 
     setFilters(copyFilters);
+    sessionStorage.setItem("filters", JSON.stringify(copyFilters));
   };
 
+  useEffect(() => {
+    setSort("price-lowtohigh");
+    setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
+  }, []);
+  console.log(filters);
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4 md:p-6">
-      <ProductFilter handleFilter={handleFilter} />
+      <ProductFilter handleFilter={handleFilter} filters={filters} />
       <div className="w-full bg-background rounded-lg shadow">
         <div className="flex items-center justify-between border-b p-4">
           <h1 className="font-extrabold text-lg">All Products</h1>
