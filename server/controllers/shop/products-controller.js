@@ -67,7 +67,7 @@ const getProductDetails = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: product,
+      data: product,
     });
   } catch (e) {
     console.log(e);

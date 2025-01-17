@@ -9,7 +9,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { sortOptions } from "@/config";
-import { fetchAllFilteredProducts } from "@/store/shop-product-slice";
+import {
+  fetchAllFilteredProducts,
+  fetchProductDetails,
+} from "@/store/shop-product-slice";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { ArrowUpDownIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -34,10 +37,14 @@ function createSearchParamsHelper(filterParams) {
 
 const ShoppingListing = () => {
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.shopProducts);
+  const { products, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
   const [sort, setSort] = useState(null);
   const [filters, setFilters] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
+
+  console.log(productDetails);
 
   const handleSort = (value) => {
     setSort(value);
@@ -59,6 +66,10 @@ const ShoppingListing = () => {
 
     setFilters(copyFilters);
     sessionStorage.setItem("filters", JSON.stringify(copyFilters));
+  };
+
+  const handleProductDetails = (productId) => {
+    dispatch(fetchProductDetails(productId));
   };
 
   useEffect(() => {
@@ -117,6 +128,7 @@ const ShoppingListing = () => {
           {products && products.length > 0
             ? products.map((productList) => (
                 <ShoppingProductTile
+                  handleProductDetails={handleProductDetails}
                   product={productList}
                   key={productList._id}
                 />
