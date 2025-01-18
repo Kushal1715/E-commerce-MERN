@@ -1,5 +1,10 @@
 import React from "react";
 import { Dialog, DialogContent } from "../ui/dialog";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { StarIcon } from "lucide-react";
+import { Input } from "../ui/input";
 
 const ProductDetails = ({ open, setOpen, productDetails }) => {
   return (
@@ -34,6 +39,38 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
                 ${productDetails?.salePrice}
               </p>
             ) : null}
+          </div>
+          <div className="mt-5 mb-5">
+            <Button className="w-full">Add to Cart</Button>
+          </div>
+          <Separator />
+          <div>
+            <h1 className="font-bold text-xl mb-5">Reviews</h1>
+            <div className=" max-h-[250px] overflow-auto">
+              <div className="flex gap-3">
+                <Avatar>
+                  <AvatarFallback>KK</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-1">
+                  <h2 className="font-bold text-lg">Kushal Khadka</h2>
+                  <div className="flex items-center gap-1">
+                    <StarIcon variant="black" />
+                    <StarIcon />
+                    <StarIcon />
+                    <StarIcon />
+                    <StarIcon />
+                  </div>
+                  <span className="text-muted-foreground">
+                    This is an awesome product
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-2 mt-5 mb-5">
+                <Input placeholder="Write a review" type="text" />
+                <Button>Submit</Button>
+              </div>
+            </div>
           </div>
         </div>
       </DialogContent>
