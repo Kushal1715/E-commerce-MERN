@@ -12,7 +12,7 @@ const ProductFilter = ({ filters, handleFilter }) => {
       </div>
       <div className="pl-4">
         {Object.keys(filterOptions).map((item) => (
-          <>
+          <React.Fragment key={item}>
             <div className="font-bold mb-1">{item}</div>
             <div>
               {filterOptions[item].map((option) => (
@@ -24,7 +24,7 @@ const ProductFilter = ({ filters, handleFilter }) => {
                     checked={
                       filters &&
                       Object.keys(filters).length > 0 &&
-                      filters[item].indexOf(option.id) > -1
+                      (filters[item]?.indexOf(option.id) > -1 || false)
                     }
                     onCheckedChange={() => handleFilter(item, option.id)}
                   />
@@ -33,7 +33,7 @@ const ProductFilter = ({ filters, handleFilter }) => {
               ))}
             </div>
             <Separator />
-          </>
+          </React.Fragment>
         ))}
       </div>
     </div>

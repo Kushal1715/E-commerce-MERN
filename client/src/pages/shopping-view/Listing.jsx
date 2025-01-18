@@ -8,7 +8,6 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
 import { sortOptions } from "@/config";
 import {
   fetchAllFilteredProducts,
