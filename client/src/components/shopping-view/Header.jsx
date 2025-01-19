@@ -67,7 +67,10 @@ const HeaderRightContent = () => {
           <ShoppingCart className="w-6 h-6" />
           <span className="sr-only">User cart</span>
         </Button>
-        <UserCartWrapper cartItems={cartItems.items} />
+        <UserCartWrapper
+          cartItems={cartItems.items}
+          setOpenCartSheet={setOpenCartSheet}
+        />
       </Sheet>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

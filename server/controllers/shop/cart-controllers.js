@@ -168,13 +168,13 @@ const updateCartItemsQty = async (req, res) => {
   }
 };
 
-const deleteCartItems = async (req, res) => {
+const deleteCartItem = async (req, res) => {
   try {
     const { userId, productId } = req.params;
     if (!userId || !productId) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
-        message: "invalid data",
+        message: "Invalid data provided!",
       });
     }
 
@@ -191,8 +191,9 @@ const deleteCartItems = async (req, res) => {
     }
 
     cart.items = cart.items.filter(
-      (item) => item.productId.toString() !== productId
+      (item) => item.productId._id.toString() !== productId
     );
+
     await cart.save();
 
     await cart.populate({
@@ -217,9 +218,10 @@ const deleteCartItems = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    res.status(500).json({
       success: false,
-      message: "some error occured",
+      message: "Error",
     });
   }
 };
@@ -228,5 +230,5 @@ module.exports = {
   addToCart,
   fetchCartItems,
   updateCartItemsQty,
-  deleteCartItems,
+  deleteCartItem,
 };
