@@ -9,6 +9,7 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { sortOptions } from "@/config";
+import { addToCart, fetchCartItems } from "@/store/shop/cartSlice";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
@@ -42,6 +43,7 @@ const ShoppingListing = () => {
   const [filters, setFilters] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const { user } = useSelector((state) => state.auth);
 
   const handleSort = (value) => {
     setSort(value);
@@ -68,6 +70,17 @@ const ShoppingListing = () => {
   const handleProductDetails = (productId) => {
     dispatch(fetchProductDetails(productId));
     setOpenDetailsDialog(true);
+  };
+
+  const handleAddToCart = (currentProductId) => {
+    dispatch(
+      addToCart({ userId: user.id, productId: currentProductId, quantity: 1 })
+    ).then((data) => {
+      console.log(data);
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user.id));
+      }
+    });
   };
 
   useEffect(() => {
@@ -128,6 +141,7 @@ const ShoppingListing = () => {
                   handleProductDetails={handleProductDetails}
                   product={productList}
                   key={productList._id}
+                  handleAddtoCart={handleAddToCart}
                 />
               ))
             : null}
