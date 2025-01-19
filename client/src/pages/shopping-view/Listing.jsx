@@ -12,7 +12,7 @@ import { sortOptions } from "@/config";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
-} from "@/store/shop-product-slice";
+} from "@/store/shop/productSlice";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { ArrowUpDownIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -30,8 +30,6 @@ function createSearchParamsHelper(filterParams) {
     }
   }
 
-  console.log(queryParams, "queryParams");
-
   return queryParams.join("&");
 }
 
@@ -44,8 +42,6 @@ const ShoppingListing = () => {
   const [filters, setFilters] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-
-  console.log(productDetails);
 
   const handleSort = (value) => {
     setSort(value);
@@ -93,7 +89,6 @@ const ShoppingListing = () => {
       );
   }, [dispatch, sort, filters]);
 
-  console.log(searchParams);
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
       <ProductFilter handleFilter={handleFilter} filters={filters} />

@@ -15,7 +15,7 @@ import {
   deleteProduct,
   editProduct,
   getAllProducts,
-} from "@/store/productSlice";
+} from "@/store/admin/productSlice";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -41,9 +41,6 @@ const AdminProducts = () => {
   const { products } = useSelector((state) => state.adminProducts);
   const { toast } = useToast();
   const [currentEditedId, setCurrentEditedId] = useState(null);
-
-  console.log(uploadedImageUrl);
-  console.log(imageFile);
 
   const onSubmit = (event) => {
     event.preventDefault();

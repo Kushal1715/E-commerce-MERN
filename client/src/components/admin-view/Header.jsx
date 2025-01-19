@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { AlignJustify, LogOut, Menu } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "@/store/authSlice";
+import { logout } from "@/store/admin/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 

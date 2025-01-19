@@ -76,7 +76,7 @@ const AdminSidebar = ({ open, setOpen }) => {
           <ChartNoAxesCombined />
           Admin Panel
         </div>
-        <MenuItems />
+        <MenuItems setOpen={setOpen} />
       </div>
     </>
   );
