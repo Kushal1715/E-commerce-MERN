@@ -53,6 +53,51 @@ const addToCart = async (req, res) => {
 
 const fetchCartItems = async (req, res) => {
   try {
+    const { userId } = req.params;
+    if (!userId) {
+      return res.status(404).json({
+        success: false,
+        message: "user id is required",
+      });
+    }
+
+    const cart = await Cart.findOne({ userId }).populate({
+      path: "items.productId",
+      select: "image title price salePrice",
+    });
+
+    if (!cart) {
+      return res.status(404).json({
+        success: false,
+        message: "cart not found ",
+      });
+    }
+
+    const validItems = cart.items.filter(
+      (productItem) => productItem.productId
+    );
+
+    if (validItems.length < cart.items.length) {
+      cart.items = validItems;
+      await cart.save();
+    }
+
+    const populateCartItems = validItems.map((item) => ({
+      productId: item.productId._id,
+      image: item.productId.image,
+      title: item.productId.title,
+      price: item.productId.price,
+      salePrice: item.productId.salePrice,
+      quantity: item.quantity,
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ...cart.doc,
+        items: populateCartItems,
+      },
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -60,6 +105,7 @@ const fetchCartItems = async (req, res) => {
     });
   }
 };
+
 const updateCartItemsQty = async (req, res) => {
   try {
   } catch (error) {
@@ -69,6 +115,7 @@ const updateCartItemsQty = async (req, res) => {
     });
   }
 };
+
 const deleteCartItems = async (req, res) => {
   try {
   } catch (error) {
