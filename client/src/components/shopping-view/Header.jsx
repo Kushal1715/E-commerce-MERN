@@ -24,18 +24,35 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { logout } from "@/store/admin/authSlice";
 import UserCartWrapper from "./cart-wrapper";
 import { fetchCartItems } from "@/store/shop/cartSlice";
+import { Label } from "../ui/label";
 
 const MenuItems = () => {
+  const navigate = useNavigate();
+
+  function handleNavigate(getCurrentMenuItem) {
+    sessionStorage.removeItem("filters");
+    const currentFilter =
+      getCurrentMenuItem.id !== "home" &&
+      getCurrentMenuItem.id !== "products" &&
+      getCurrentMenuItem.id !== "search"
+        ? {
+            category: [getCurrentMenuItem.id],
+          }
+        : null;
+
+    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+    navigate(getCurrentMenuItem.path);
+  }
   return (
     <nav className="flex flex-col lg:flex-row lg:items-center lg:mb-0 mb-3 gap-6">
       {shoppingViewHeaderMenuItems.map((menuItem) => (
-        <Link
+        <Label
           key={menuItem.id}
-          to={menuItem.path}
-          className="text-sm font-medium"
+          onClick={() => handleNavigate(menuItem)}
+          className="text-sm font-medium cursor-pointer"
         >
           {menuItem.label}
-        </Link>
+        </Label>
       ))}
     </nav>
   );

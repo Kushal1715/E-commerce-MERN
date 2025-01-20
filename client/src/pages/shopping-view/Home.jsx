@@ -28,6 +28,7 @@ import {
 import ProductDetails from "@/components/shopping-view/product-details";
 import { addToCart, fetchCartItems } from "@/store/shop/cartSlice";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -56,6 +57,7 @@ const ShoppingHome = () => {
   const { products, productDetails } = useSelector(
     (state) => state.shopProducts
   );
+  const navigate = useNavigate();
 
   function handleGetProductDetails(getCurrentProductId) {
     dispatch(fetchProductDetails(getCurrentProductId));
@@ -78,6 +80,15 @@ const ShoppingHome = () => {
       }
     });
   }
+
+  const handleNavigateToListing = (type, currentItem) => {
+    sessionStorage.removeItem("filters");
+    const currentFilter = {
+      [type]: [currentItem.id],
+    };
+    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+    navigate("/shop/listing");
+  };
 
   useEffect(() => {
     dispatch(
@@ -136,9 +147,9 @@ const ShoppingHome = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {categoriesWithIcon.map((categoryItem, index) => (
               <Card
-                // onClick={() =>
-                //   handleNavigateToListingPage(categoryItem, "category")
-                // }
+                onClick={() =>
+                  handleNavigateToListing("category", categoryItem)
+                }
                 className="cursor-pointer hover:shadow-lg transition-shadow"
                 key={index}
               >
@@ -158,7 +169,7 @@ const ShoppingHome = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {brandsWithIcon.map((brandItem) => (
               <Card
-                // onClick={() => handleNavigateToListingPage(brandItem, "brand")}
+                onClick={() => handleNavigateToListing("brand", brandItem)}
                 className="cursor-pointer hover:shadow-lg transition-shadow"
                 key={brandItem.id}
               >
