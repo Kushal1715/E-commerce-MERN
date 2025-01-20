@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import banner1 from "../../assets/banner-1.webp";
 import banner2 from "../../assets/banner-2.webp";
 import banner3 from "../../assets/banner-3.webp";
@@ -23,7 +23,16 @@ const categoriesWithIcon = [
 ];
 
 const ShoppingHome = () => {
+  const [slider, setSlider] = useState(0);
   const slides = [banner1, banner2, banner3];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSlider((prevSlide) => (prevSlide + 1) % slides.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [slides]);
   return (
     <div className="flex flex-col min-h-screen">
       <div className="h-[600px] w-full relative overflow-hidden">
@@ -31,13 +40,29 @@ const ShoppingHome = () => {
           <img
             src={slide}
             key={index}
-            className="h-full w-full object-cover absolute top-0 left-0 transition-opacity duration-1000"
+            className={` ${
+              index === slider ? "opacity-100" : "opacity-0"
+            } h-full w-full object-cover absolute top-0 left-0 transition-opacity duration-1000`}
           />
         ))}
-        <Button className="absolute top-1/2 left-4 bg-white" variant="outline">
+        <Button
+          className="absolute top-1/2 left-4 bg-white"
+          variant="outline"
+          onClick={() =>
+            setSlider(
+              (prevSlide) => (prevSlide - 1 + slides.length) % slides.length
+            )
+          }
+        >
           <ChevronLeftIcon />
         </Button>
-        <Button className="absolute top-1/2 right-4 bg-white" variant="outline">
+        <Button
+          className="absolute top-1/2 right-4 bg-white"
+          variant="outline"
+          onClick={() =>
+            setSlider((prevSlide) => (prevSlide + 1) % slides.length)
+          }
+        >
           <ChevronRightIcon />
         </Button>
       </div>
