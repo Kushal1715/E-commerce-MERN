@@ -9,6 +9,7 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { sortOptions } from "@/config";
+import { useToast } from "@/hooks/use-toast";
 import { addToCart, fetchCartItems } from "@/store/shop/cartSlice";
 import {
   fetchAllFilteredProducts,
@@ -44,6 +45,7 @@ const ShoppingListing = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const { user } = useSelector((state) => state.auth);
+  const { toast } = useToast();
 
   const handleSort = (value) => {
     setSort(value);
@@ -76,8 +78,10 @@ const ShoppingListing = () => {
     dispatch(
       addToCart({ userId: user.id, productId: currentProductId, quantity: 1 })
     ).then((data) => {
-      console.log(data);
       if (data?.payload?.success) {
+        toast({
+          title: "Added to cart",
+        });
         dispatch(fetchCartItems(user.id));
       }
     });

@@ -5,8 +5,28 @@ import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { StarIcon } from "lucide-react";
 import { Input } from "../ui/input";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, fetchCartItems } from "@/store/shop/cartSlice";
+import { useToast } from "@/hooks/use-toast";
 
 const ProductDetails = ({ open, setOpen, productDetails }) => {
+  const { toast } = useToast();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  const handleAddToCart = (currentProductId) => {
+    dispatch(
+      addToCart({ userId: user.id, productId: currentProductId, quantity: 1 })
+    ).then((data) => {
+      console.log(data);
+      if (data?.payload?.success) {
+        toast({
+          title: "Added to cart",
+        });
+        dispatch(fetchCartItems(user.id));
+      }
+    });
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]">
@@ -41,7 +61,12 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
             ) : null}
           </div>
           <div className="mt-5 mb-5">
-            <Button className="w-full">Add to Cart</Button>
+            <Button
+              className="w-full"
+              onClick={() => handleAddToCart(productDetails._id)}
+            >
+              Add to Cart
+            </Button>
           </div>
           <Separator />
           <div>
