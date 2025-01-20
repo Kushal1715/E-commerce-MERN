@@ -24,6 +24,19 @@ function UserCartItemsContent({ cartItem }) {
     });
   }
 
+  const handleUpdateQuantity = (currentCartItem, action) => {
+    dispatch(
+      updateCartQuantity({
+        userId: user.id,
+        productId: currentCartItem.productId,
+        quantity:
+          action === "plus"
+            ? currentCartItem?.quantity + 1
+            : currentCartItem?.quantity - 1,
+      })
+    );
+  };
+
   return (
     <div className="flex items-center space-x-4">
       <img
