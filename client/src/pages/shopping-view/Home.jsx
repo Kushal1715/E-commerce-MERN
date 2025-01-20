@@ -4,15 +4,30 @@ import banner2 from "../../assets/banner-2.webp";
 import banner3 from "../../assets/banner-3.webp";
 import { Button } from "@/components/ui/button";
 import {
+  Airplay,
   BabyIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   CloudLightning,
+  Heater,
+  Images,
+  Shirt,
   ShirtIcon,
+  ShoppingBasket,
   UmbrellaIcon,
+  WashingMachine,
   WatchIcon,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import ShoppingProductTile from "@/components/shopping-view/product-tile";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchAllFilteredProducts,
+  fetchProductDetails,
+} from "@/store/shop/productSlice";
+import ProductDetails from "@/components/shopping-view/product-details";
+import { addToCart, fetchCartItems } from "@/store/shop/cartSlice";
+import { useToast } from "@/hooks/use-toast";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -22,9 +37,56 @@ const categoriesWithIcon = [
   { id: "footwear", label: "Footwear", icon: UmbrellaIcon },
 ];
 
+const brandsWithIcon = [
+  { id: "nike", label: "Nike", icon: Shirt },
+  { id: "adidas", label: "Adidas", icon: WashingMachine },
+  { id: "puma", label: "Puma", icon: ShoppingBasket },
+  { id: "levi", label: "Levi's", icon: Airplay },
+  { id: "zara", label: "Zara", icon: Images },
+  { id: "h&m", label: "H&M", icon: Heater },
+];
+
 const ShoppingHome = () => {
   const [slider, setSlider] = useState(0);
   const slides = [banner1, banner2, banner3];
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { toast } = useToast();
+  const { products, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
+
+  function handleGetProductDetails(getCurrentProductId) {
+    dispatch(fetchProductDetails(getCurrentProductId));
+    setOpenDetailsDialog(true);
+  }
+
+  function handleAddtoCart(getCurrentProductId) {
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast({
+          title: "Product is added to cart",
+        });
+      }
+    });
+  }
+
+  useEffect(() => {
+    dispatch(
+      fetchAllFilteredProducts({
+        filterParams: {},
+        sortParams: "price-lowtohigh",
+      })
+    );
+  }, [dispatch]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -89,6 +151,51 @@ const ShoppingHome = () => {
           </div>
         </div>
       </section>
+
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8">Shop by Brand</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {brandsWithIcon.map((brandItem) => (
+              <Card
+                // onClick={() => handleNavigateToListingPage(brandItem, "brand")}
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+                key={brandItem.id}
+              >
+                <CardContent className="flex flex-col items-center justify-center p-6">
+                  <brandItem.icon className="w-12 h-12 mb-4 text-primary" />
+                  <span className="font-bold">{brandItem.label}</span>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8">
+            Feature Products
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {products && products.length > 0
+              ? products.map((productItem, index) => (
+                  <ShoppingProductTile
+                    handleProductDetails={handleGetProductDetails}
+                    product={productItem}
+                    handleAddtoCart={handleAddtoCart}
+                    key={index}
+                  />
+                ))
+              : null}
+          </div>
+        </div>
+      </section>
+      <ProductDetails
+        open={openDetailsDialog}
+        setOpen={setOpenDetailsDialog}
+        productDetails={productDetails}
+      />
     </div>
   );
 };
