@@ -36,6 +36,20 @@ const addAddress = async (req, res) => {
 
 const fetchAddress = async (req, res) => {
   try {
+    const { userId } = req.params;
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        error: "Please provide user id",
+      });
+    }
+
+    const address = await Address.find({ userId });
+
+    res.status(200).json({
+      success: true,
+      data: address,
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
@@ -47,6 +61,33 @@ const fetchAddress = async (req, res) => {
 
 const editAddress = async (req, res) => {
   try {
+    const { userId, addressId } = req.params;
+    const formData = req.body;
+
+    if (!userId || !addressId) {
+      return res.status(400).json({
+        success: false,
+        error: "Please provide user id and address id",
+      });
+    }
+
+    const address = await Address.findOneAndUpdate(
+      { _id: addressId, userId },
+      formData,
+      { new: true }
+    );
+
+    if (!address) {
+      return res.status(404).json({
+        success: false,
+        error: "Address not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: address,
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
@@ -57,6 +98,27 @@ const editAddress = async (req, res) => {
 };
 
 const deleteAddress = async (req, res) => {
+  const { userId, addressId } = req.params;
+
+  if (!userId || !addressId) {
+    return res.status(400).json({
+      success: false,
+      error: "Please provide user id and address id",
+    });
+  }
+
+  const address = await Address.findOneAndDelete({ _id: addressId, userId });
+
+  if (!address) {
+    return res.status(404).json({
+      success: false,
+      error: "Address not found",
+    });
+  }
+  res.status(200).json({
+    success: true,
+    data: address,
+  });
   try {
   } catch (err) {
     console.log(err);
