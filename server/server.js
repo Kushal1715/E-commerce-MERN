@@ -6,6 +6,7 @@ const authRouter = require("./routes/auth/auth-route");
 const adminProductRouter = require("./routes/admin/product-routes");
 const shopProductsRouter = require("./routes/shop/product-route");
 const shopCartRouter = require("./routes/shop/cart-route");
+const shopAddressRouter = require("./routes/shop/address-routes");
 
 mongoose
   .connect("mongodb+srv://kushal:kushal@e-commerce-mern.cuod3.mongodb.net/")
@@ -36,5 +37,6 @@ app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductRouter);
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
+app.use("/api/shop/address", shopAddressRouter);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
