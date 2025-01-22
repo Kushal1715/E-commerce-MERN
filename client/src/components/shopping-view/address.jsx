@@ -7,8 +7,10 @@ import {
   addAddress,
   deleteAddress,
   fetchAddress,
+  updateAddress,
 } from "@/store/shop/addressSlice";
 import AddressCard from "./address-card";
+import { useToast } from "@/hooks/use-toast";
 
 const initialFormData = {
   address: "",
@@ -23,15 +25,35 @@ const Address = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { addressList } = useSelector((state) => state.shopAddress);
+  const [currentEditId, setCurrentEditId] = useState(null);
+  const { toast } = useToast();
 
   const handleAddressFormSubmit = (e) => {
     e.preventDefault();
-    dispatch(addAddress({ ...formData, userId: user.id })).then((data) => {
-      if (data?.payload?.success) {
-        setFormData(initialFormData);
-        dispatch(fetchAddress(user.id));
-      }
-    });
+
+    if (addressList.length >= 3) {
+      toast({
+        title: "You can only add 3 addresses",
+        variant: "destructive",
+      });
+      return;
+    }
+    currentEditId
+      ? dispatch(
+          updateAddress({ userId: user.id, addressId: currentEditId, formData })
+        ).then((data) => {
+          if (data?.payload?.success) {
+            setFormData(initialFormData);
+            setCurrentEditId(null);
+            dispatch(fetchAddress(user.id));
+          }
+        })
+      : dispatch(addAddress({ ...formData, userId: user.id })).then((data) => {
+          if (data?.payload?.success) {
+            setFormData(initialFormData);
+            dispatch(fetchAddress(user.id));
+          }
+        });
   };
 
   const isValid = () => {
@@ -40,7 +62,17 @@ const Address = () => {
       .every((item) => item);
   };
 
-  const handleAddressEdit = (address) => {};
+  const handleAddressEdit = (address) => {
+    setFormData({
+      ...formData,
+      address: address.address,
+      city: address.city,
+      pincode: address.pincode,
+      phone: address.phone,
+      notes: address.notes,
+    });
+    setCurrentEditId(address._id);
+  };
   const handleAddressDelete = (address) => {
     console.log(address);
     dispatch(deleteAddress({ userId: user.id, addressId: address._id })).then(
@@ -72,7 +104,7 @@ const Address = () => {
       </div>
 
       <CardHeader>
-        <CardTitle>Add New Address</CardTitle>
+        <CardTitle>{currentEditId ? "Edit" : "Add New"}Address</CardTitle>
       </CardHeader>
       <CardContent>
         <CommonForm
@@ -80,7 +112,7 @@ const Address = () => {
           formData={formData}
           setFormData={setFormData}
           onSubmit={handleAddressFormSubmit}
-          buttonText="Add"
+          buttonText={currentEditId ? "Edit" : "Add"}
           isBtnDisabled={!isValid()}
         />
       </CardContent>
