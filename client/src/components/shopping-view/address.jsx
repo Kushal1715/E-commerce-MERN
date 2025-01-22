@@ -31,7 +31,8 @@ const Address = () => {
   const handleAddressFormSubmit = (e) => {
     e.preventDefault();
 
-    if (addressList.length >= 3) {
+    if (currentEditId === null && addressList.length >= 3) {
+      setFormData(initialFormData);
       toast({
         title: "You can only add 3 addresses",
         variant: "destructive",
@@ -45,12 +46,18 @@ const Address = () => {
           if (data?.payload?.success) {
             setFormData(initialFormData);
             setCurrentEditId(null);
+            toast({
+              title: "Address updated successfully",
+            });
             dispatch(fetchAddress(user.id));
           }
         })
       : dispatch(addAddress({ ...formData, userId: user.id })).then((data) => {
           if (data?.payload?.success) {
             setFormData(initialFormData);
+            toast({
+              title: "Address added successfully",
+            });
             dispatch(fetchAddress(user.id));
           }
         });
@@ -78,6 +85,9 @@ const Address = () => {
     dispatch(deleteAddress({ userId: user.id, addressId: address._id })).then(
       (data) => {
         if (data?.payload?.success) {
+          toast({
+            title: "Address deleted successfully",
+          });
           dispatch(fetchAddress(user?.id));
         }
       }
@@ -90,7 +100,7 @@ const Address = () => {
 
   return (
     <Card>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
         {addressList && addressList.length > 0
           ? addressList.map((address, index) => (
               <AddressCard
