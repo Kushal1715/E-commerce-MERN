@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 
-const AddressCard = ({ address, handleAddressEdit, handleAddressDelete }) => {
+const AddressCard = ({ address, handleAddressDelete }) => {
   return (
     <Card>
       <CardContent className="flex flex-col gap-3 py-6">
@@ -14,7 +14,7 @@ const AddressCard = ({ address, handleAddressEdit, handleAddressDelete }) => {
         <Label>Notes: {address.notes}</Label>
       </CardContent>
       <CardFooter className="flex items-center justify-between">
-        <Button onClick={() => handleAddressEdit(address)}>Edit</Button>
+        <Button>Edit</Button>
         <Button onClick={() => handleAddressDelete(address)}>Delete</Button>
       </CardFooter>
     </Card>
