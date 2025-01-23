@@ -7,9 +7,10 @@ const adminProductRouter = require("./routes/admin/product-routes");
 const shopProductsRouter = require("./routes/shop/product-route");
 const shopCartRouter = require("./routes/shop/cart-route");
 const shopAddressRouter = require("./routes/shop/address-routes");
+require("dotenv").config();
 
 mongoose
-  .connect("mongodb+srv://kushal:kushal@e-commerce-mern.cuod3.mongodb.net/")
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDb connected"))
   .catch((error) => console.log(error));
 
