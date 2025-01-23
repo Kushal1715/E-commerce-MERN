@@ -24,6 +24,7 @@ const Address = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { addressList } = useSelector((state) => state.shopAddress);
+  const [addressToBeEditedId, setAddressToBeEditedId] = useState(null);
   const { toast } = useToast();
 
   const handleAddressFormSubmit = (e) => {
@@ -59,9 +60,24 @@ const Address = () => {
     });
   };
 
+  const handleAddressEdit = (currentAddress) => {
+    setAddressToBeEditedId(currentAddress._id);
+    console.log(currentAddress);
+    setFormData({
+      ...formData,
+      address: currentAddress.address,
+      city: currentAddress.city,
+      pincode: currentAddress.pincode,
+      phone: currentAddress.phone,
+      notes: currentAddress.notes,
+    });
+  };
+
   useEffect(() => {
     dispatch(fetchAddress(user.id));
   }, [dispatch]);
+
+  console.log(formData);
 
   return (
     <Card>
@@ -72,13 +88,14 @@ const Address = () => {
                 key={index}
                 address={address}
                 handleAddressDelete={handleAddressDelete}
+                handleAddressEdit={handleAddressEdit}
               />
             ))
           : null}
       </div>
 
       <CardHeader>
-        <CardTitle>Address</CardTitle>
+        <CardTitle>{addressToBeEditedId ? "Edit" : "Add"} Address</CardTitle>
       </CardHeader>
       <CardContent>
         <CommonForm
@@ -86,7 +103,7 @@ const Address = () => {
           formData={formData}
           setFormData={setFormData}
           onSubmit={handleAddressFormSubmit}
-          buttonText="Add"
+          buttonText={addressToBeEditedId ? "Edit" : "Add"}
           isBtnDisabled={!isValid()}
         />
       </CardContent>
