@@ -3,10 +3,23 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 
-const AddressCard = ({ address, handleAddressDelete, handleAddressEdit }) => {
+const AddressCard = ({
+  address,
+  handleAddressDelete,
+  handleAddressEdit,
+  selectedAddress,
+  setSelectedAddress,
+}) => {
   return (
-    <Card>
-      <CardContent className="flex flex-col gap-3 py-6">
+    <Card
+      className={`${
+        selectedAddress?._id === address?._id ? "border border-blue-500" : null
+      }`}
+    >
+      <CardContent
+        className={`flex flex-col gap-3 py-6`}
+        onClick={() => setSelectedAddress(address)}
+      >
         <Label>Address: {address.address}</Label>
         <Label>City: {address.city}</Label>
         <Label>Pincode: {address.pincode}</Label>

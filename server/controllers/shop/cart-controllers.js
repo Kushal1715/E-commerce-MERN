@@ -94,7 +94,7 @@ const fetchCartItems = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        ...cart.doc,
+        ...cart._doc,
         items: populateCartItems,
       },
     });

@@ -11,8 +11,6 @@ function UserCartItemsContent({ cartItem }) {
   const dispatch = useDispatch();
   const { toast } = useToast();
 
-  console.log(cartItems);
-
   function handleCartItemDelete(getCartItem) {
     console.log(getCartItem);
     dispatch(
