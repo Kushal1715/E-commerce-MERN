@@ -41,6 +41,10 @@ const ShoppingCheckout = () => {
         phone: selectedAddress?.phone,
         notes: selectedAddress?.notes,
       },
+      orderStatus: "pending",
+      totalAmount: totalCartAmount,
+      orderDate: new Date(),
+      orderUpdateDate: new Date(),
     };
   };
 
