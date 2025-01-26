@@ -31,6 +31,14 @@ const Address = () => {
   const handleAddressFormSubmit = (e) => {
     e.preventDefault();
 
+    if (addressList.length >= 2 && !addressToBeEditedId) {
+      toast({
+        title: "Only 2 address can be added",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (addressToBeEditedId) {
       dispatch(
         updateAddress({

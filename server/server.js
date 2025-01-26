@@ -7,6 +7,7 @@ const adminProductRouter = require("./routes/admin/product-routes");
 const shopProductsRouter = require("./routes/shop/product-route");
 const shopCartRouter = require("./routes/shop/cart-route");
 const shopAddressRouter = require("./routes/shop/address-routes");
+const shopOrderRouter = require("./routes/shop/order-routes");
 require("dotenv").config();
 
 mongoose
@@ -39,5 +40,6 @@ app.use("/api/admin/products", adminProductRouter);
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/address", shopAddressRouter);
+app.use("/api/shop/order", shopOrderRouter);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
