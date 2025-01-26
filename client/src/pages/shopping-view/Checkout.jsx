@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import img from "../../assets/account.jpg";
 import Address from "@/components/shopping-view/address";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import UserCartItemsContent from "@/components/shopping-view/cart-items-content";
 import { Button } from "@/components/ui/button";
+import { createOrder } from "@/store/shop/orderSlice";
+import { useToast } from "@/hooks/use-toast";
 
 const ShoppingCheckout = () => {
   const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const { toast } = useToast();
+  const dispatch = useDispatch();
 
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
@@ -20,9 +24,23 @@ const ShoppingCheckout = () => {
         )
       : null;
 
-  console.log(selectedAddress);
-
   const handleCheckout = () => {
+    if (!selectedAddress) {
+      toast({
+        title: "select one address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (cartItems.items.length < 1) {
+      toast({
+        title: "add at least one item to cart",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const orderData = {
       userId: user.id,
       cartId: cartItems?._id,
@@ -46,6 +64,8 @@ const ShoppingCheckout = () => {
       orderDate: new Date(),
       orderUpdateDate: new Date(),
     };
+
+    dispatch(createOrder(orderData)).then((data) => console.log(data));
   };
 
   return (
