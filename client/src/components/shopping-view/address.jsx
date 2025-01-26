@@ -7,6 +7,7 @@ import {
   addAddress,
   deleteAddress,
   fetchAddress,
+  updateAddress,
 } from "@/store/shop/addressSlice";
 import AddressCard from "./address-card";
 import { useToast } from "@/hooks/use-toast";
@@ -30,15 +31,31 @@ const Address = () => {
   const handleAddressFormSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(addAddress({ ...formData, userId: user.id })).then((data) => {
-      if (data?.payload?.success) {
-        setFormData(initialFormData);
-        toast({
-          title: "Address added successfully",
-        });
-        dispatch(fetchAddress(user.id));
-      }
-    });
+    if (addressToBeEditedId) {
+      dispatch(
+        updateAddress({
+          userId: user.id,
+          addressId: addressToBeEditedId,
+          formData,
+        })
+      ).then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchAddress(user.id));
+          setAddressToBeEditedId(null);
+          setFormData(initialFormData);
+        }
+      });
+    } else {
+      dispatch(addAddress({ ...formData, userId: user.id })).then((data) => {
+        if (data?.payload?.success) {
+          setFormData(initialFormData);
+          toast({
+            title: "Address added successfully",
+          });
+          dispatch(fetchAddress(user.id));
+        }
+      });
+    }
   };
 
   const isValid = () => {
@@ -76,8 +93,6 @@ const Address = () => {
   useEffect(() => {
     dispatch(fetchAddress(user.id));
   }, [dispatch]);
-
-  console.log(formData);
 
   return (
     <Card>
