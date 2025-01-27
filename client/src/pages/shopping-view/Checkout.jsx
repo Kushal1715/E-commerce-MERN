@@ -65,7 +65,14 @@ const ShoppingCheckout = () => {
       orderUpdateDate: new Date(),
     };
 
-    dispatch(createOrder(orderData)).then((data) => console.log(data));
+    dispatch(createOrder(orderData)).then((data) => {
+      if (data?.payload?.success) {
+        setSelectedAddress(null);
+        toast({
+          title: data?.payload?.message,
+        });
+      }
+    });
   };
 
   return (
