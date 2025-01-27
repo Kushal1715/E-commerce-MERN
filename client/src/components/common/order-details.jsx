@@ -8,7 +8,7 @@ const initialFormData = {
   status: "",
 };
 
-const OrderDetailsModal = () => {
+const OrderDetailsModal = ({ orderDetails }) => {
   const { user } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState(initialFormData);
 
@@ -17,6 +17,8 @@ const OrderDetailsModal = () => {
     console.log(formData, "form submit");
   };
 
+  console.log(orderDetails, "details page");
+
   return (
     <DialogContent className="sm:max-w-[600px]">
       <DialogTitle className="text-xl font-bold">Order Details</DialogTitle>
@@ -24,15 +26,15 @@ const OrderDetailsModal = () => {
         <div className="grid gap-2">
           <div className="flex items-center justify-between font-medium">
             <p>Order ID</p>
-            <Label>23423</Label>
+            <Label>{orderDetails?._id}</Label>
           </div>
           <div className="flex items-center justify-between font-medium">
             <p>Order Date</p>
-            <Label>1/26/2025</Label>
+            <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
           </div>
           <div className="flex items-center justify-between font-medium">
             <p>Order Price</p>
-            <Label>$2323</Label>
+            <Label>{orderDetails?.totalAmount}</Label>
           </div>
           <div className="flex items-center justify-between font-medium">
             <p>Payment Method</p>
@@ -40,20 +42,22 @@ const OrderDetailsModal = () => {
           </div>
           <div className="flex items-center justify-between font-medium">
             <p>Payment Status</p>
-            <Label>In Process</Label>
+            <Label>{orderDetails?.orderStatus}</Label>
           </div>
           <div className="flex items-center justify-between font-medium">
             <p>Order Status</p>
-            <Label>Pending</Label>
+            <Label>{orderDetails?.orderStatus}</Label>
           </div>
         </div>
         <div className="grid gap-2">
           <h1 className="font-bold text-lg ">Item Details</h1>
-          <div className="flex items-center justify-between mt-4">
-            <Label>Title: Product 1</Label>
-            <Label>Quantity: 1</Label>
-            <Label>Price: $234</Label>
-          </div>
+          {orderDetails?.cartItems?.map((item) => (
+            <div className="flex items-center justify-between mt-4">
+              <Label>Title: Product 1</Label>
+              <Label>Quantity: 1</Label>
+              <Label>Price: $234</Label>
+            </div>
+          ))}
         </div>
         <div className="grid gap-2 font-medium">
           <h1 className="text-lg font-bold">Shipping Info</h1>

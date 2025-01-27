@@ -12,16 +12,24 @@ import { Button } from "../ui/button";
 import { Dialog } from "../ui/dialog";
 import OrderDetailsModal from "../common/order-details";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrderByUser } from "@/store/shop/orderSlice";
+import { getOrderByUser, getOrderDetails } from "@/store/shop/orderSlice";
+import { Badge } from "../ui/badge";
 
 const ShoppingOrders = () => {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const { user } = useSelector((state) => state.auth);
+  const { orderList, orderDetails } = useSelector((state) => state.shopOrder);
   const dispatch = useDispatch();
 
+  const handleViewDetails = (currentOrderId) => {
+    setOpenDetailsDialog(true);
+    dispatch(getOrderDetails(currentOrderId));
+  };
+
   useEffect(() => {
-    dispatch(getOrderByUser(user.id)).then((data) => console.log(data));
+    dispatch(getOrderByUser(user.id));
   }, [dispatch]);
+
   return (
     <Card>
       <CardHeader>
@@ -41,23 +49,39 @@ const ShoppingOrders = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>234234</TableCell>
-              <TableCell>1/26/2025</TableCell>
-              <TableCell>Pending</TableCell>
-              <TableCell>$234</TableCell>
-              <TableCell>
-                <Dialog
-                  open={openDetailsDialog}
-                  onOpenChange={setOpenDetailsDialog}
-                >
-                  <Button onClick={() => setOpenDetailsDialog(true)}>
-                    View Details
-                  </Button>
-                  <OrderDetailsModal />
-                </Dialog>
-              </TableCell>
-            </TableRow>
+            {orderList &&
+              orderList.length > 0 &&
+              orderList.map((order, index) => (
+                <TableRow key={index}>
+                  <TableCell>{order?._id}</TableCell>
+                  <TableCell>{order?.orderDate.split("T")[0]}</TableCell>
+                  <TableCell>
+                    <Badge
+                      className={`${
+                        order?.orderStatus === "pending"
+                          ? "bg-black"
+                          : order?.orderStatus === "rejected"
+                          ? "bg-red-500"
+                          : "bg-green-500"
+                      } py-[5px] px-3`}
+                    >
+                      {order?.orderStatus}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{order?.totalAmount}</TableCell>
+                  <TableCell>
+                    <Dialog
+                      open={openDetailsDialog}
+                      onOpenChange={setOpenDetailsDialog}
+                    >
+                      <Button onClick={() => handleViewDetails(order?._id)}>
+                        View Details
+                      </Button>
+                      <OrderDetailsModal orderDetails={orderDetails} />
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </CardContent>
