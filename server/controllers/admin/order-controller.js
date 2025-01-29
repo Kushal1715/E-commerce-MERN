@@ -24,4 +24,56 @@ const getAllOrders = async (req,res) => {
     }
 }
 
+const getOrderDetails = async (req,res) =>{
+    try{
+        const {id} = req.params;
+        const order = await Order.findById(id);
+        if(!orders){
+            return res.status(404).json({
+                success: false,
+                message: 'order not found'
+            })
+        }
+
+        res.status(201).json({
+            success: true,
+            data: order
+        })
+    }catch(e){
+        console.log(e);
+        return res.status(500).json({
+            success: false,
+            message: 'something went wrong'
+        })
+    }
+}
+
+
+const updateOrderStatus = async (req,res) => {
+    try{
+        const {orderStatus} = req.body;
+        const {id} = req.params;
+
+        const findOrder = await Order.findById(id);
+
+        if(!findOrder){
+            return res.status(404).json({
+                success: false,
+                message: 'order not found'
+            })
+        }
+
+        const updateStatus = await Order.findByIdAndUpdate(id, {orderStatus})
+
+        res.status(201).json({
+            success: true,
+            message: 'order status updated successfully'
+        })
+    }catch(e){
+        return res.status(500).json({
+            success: false,
+            message: 'something went wrong'
+        })
+    }
+}
 module.exports = {getAllOrders}
