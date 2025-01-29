@@ -65,6 +65,13 @@ const updateOrderStatus = async (req,res) => {
 
         const updateStatus = await Order.findByIdAndUpdate(id, {orderStatus})
 
+        if(!updateStatus){
+            return res.status(400).json({
+                success:false,
+                message: 'failed to update status'
+            })
+        }
+
         res.status(201).json({
             success: true,
             message: 'order status updated successfully'
@@ -76,4 +83,5 @@ const updateOrderStatus = async (req,res) => {
         })
     }
 }
-module.exports = {getAllOrders}
+
+module.exports = {getAllOrders, getOrderDetails, updateOrderStatus}
