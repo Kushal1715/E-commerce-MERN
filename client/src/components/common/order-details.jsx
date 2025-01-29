@@ -51,8 +51,8 @@ const OrderDetailsModal = ({ orderDetails }) => {
         </div>
         <div className="grid gap-2">
           <h1 className="font-bold text-lg ">Item Details</h1>
-          {orderDetails?.cartItems?.map((item) => (
-            <div className="flex items-center justify-between mt-4">
+          {orderDetails?.cartItems?.map((item, index) => (
+            <div className="flex items-center justify-between mt-4" key={index}>
               <Label>Title: Product 1</Label>
               <Label>Quantity: 1</Label>
               <Label>Price: $234</Label>
