@@ -28,7 +28,7 @@ const getOrderDetails = async (req,res) =>{
     try{
         const {id} = req.params;
         const order = await Order.findById(id);
-        if(!orders){
+        if(!order){
             return res.status(404).json({
                 success: false,
                 message: 'order not found'

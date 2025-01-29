@@ -5,6 +5,6 @@ const router = express.Router()
 
 router.get('/getorders', getAllOrders)
 router.get('/getorder-detail/:id', getOrderDetails)
-router.put('/update-status', updateOrderStatus)
+router.put('/update-status/:id', updateOrderStatus)
 
 module.exports = router;
