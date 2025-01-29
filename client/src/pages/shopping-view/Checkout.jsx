@@ -6,6 +6,8 @@ import UserCartItemsContent from "@/components/shopping-view/cart-items-content"
 import { Button } from "@/components/ui/button";
 import { createOrder } from "@/store/shop/orderSlice";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import { clearCartItems } from "@/store/shop/cartSlice";
 
 const ShoppingCheckout = () => {
   const { cartItems } = useSelector((state) => state.shopCart);
@@ -13,6 +15,7 @@ const ShoppingCheckout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const { toast } = useToast();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
@@ -68,6 +71,8 @@ const ShoppingCheckout = () => {
     dispatch(createOrder(orderData)).then((data) => {
       if (data?.payload?.success) {
         setSelectedAddress(null);
+        navigate("/shop/account");
+        dispatch(clearCartItems());
         toast({
           title: data?.payload?.message,
         });

@@ -18,6 +18,7 @@ const OrderDetailsModal = ({ orderDetails }) => {
   };
 
   console.log(orderDetails, "details page");
+  console.log(user);
 
   return (
     <DialogContent className="sm:max-w-[600px]">
@@ -53,20 +54,20 @@ const OrderDetailsModal = ({ orderDetails }) => {
           <h1 className="font-bold text-lg ">Item Details</h1>
           {orderDetails?.cartItems?.map((item, index) => (
             <div className="flex items-center justify-between mt-4" key={index}>
-              <Label>Title: Product 1</Label>
-              <Label>Quantity: 1</Label>
-              <Label>Price: $234</Label>
+              <Label>Title: {item?.title}</Label>
+              <Label>Quantity: {item?.quantity}</Label>
+              <Label>Price: {item?.price}</Label>
             </div>
           ))}
         </div>
         <div className="grid gap-2 font-medium">
           <h1 className="text-lg font-bold">Shipping Info</h1>
-          <span>UserName</span>
-          <span>Address</span>
-          <span>City</span>
-          <span>Pincode</span>
-          <span>Phone</span>
-          <span>Notes</span>
+          <span>{user?.userName}</span>
+          <span>{orderDetails?.addressInfo?.address}</span>
+          <span>{orderDetails?.addressInfo?.city}</span>
+          <span>{orderDetails?.addressInfo?.pincode}</span>
+          <span>{orderDetails?.addressInfo?.phone}</span>
+          <span>{orderDetails?.addressInfo?.notes}</span>
         </div>
 
         {user.role === "admin" && (
