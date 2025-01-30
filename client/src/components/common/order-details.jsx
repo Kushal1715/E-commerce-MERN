@@ -1,20 +1,32 @@
 import React, { useState } from "react";
 import { DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CommonForm from "./form";
+import { getAllOrders, updateOrderStatus } from "@/store/admin/orderSlice";
 
 const initialFormData = {
   status: "",
 };
 
-const OrderDetailsModal = ({ orderDetails }) => {
+const OrderDetailsModal = ({ orderDetails, setOpenDetailsDialog }) => {
   const { user } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState(initialFormData);
+  const dispatch = useDispatch();
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log(formData, "form submit");
+    dispatch(
+      updateOrderStatus({
+        currentOrderId: orderDetails?._id,
+        status: formData.status,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        setOpenDetailsDialog(false);
+        dispatch(getAllOrders());
+      }
+    });
   };
 
   return (

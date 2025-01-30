@@ -63,7 +63,10 @@ const AdminOrders = () => {
                         <Button onClick={() => handleViewDetails(order?._id)}>
                           View Details
                         </Button>
-                        <OrderDetailsModal orderDetails={orderDetails} />
+                        <OrderDetailsModal
+                          orderDetails={orderDetails}
+                          setOpenDetailsDialog={setOpenDetailsDialog}
+                        />
                       </Dialog>
                     </TableCell>
                   </TableRow>
