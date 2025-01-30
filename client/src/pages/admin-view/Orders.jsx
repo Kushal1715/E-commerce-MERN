@@ -10,20 +10,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getAllOrders } from "@/store/admin/orderSlice";
+import { getAllOrders, getOrderDetails } from "@/store/admin/orderSlice";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const AdminOrders = () => {
   const [openOrderDetailsDialog, setOpenDetailsDialog] = useState(false);
-  const { orderList } = useSelector((state) => state.adminOrder);
+  const { orderList, orderDetails } = useSelector((state) => state.adminOrder);
   const dispatch = useDispatch();
+
+  const handleViewDetails = (currentOrderId) => {
+    setOpenDetailsDialog(true);
+    dispatch(getOrderDetails(currentOrderId));
+  };
 
   useEffect(() => {
     dispatch(getAllOrders());
   }, [dispatch]);
 
-  console.log(orderList);
+  console.log(orderDetails);
   return (
     <Card>
       <CardHeader>
@@ -43,23 +48,27 @@ const AdminOrders = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>2424</TableCell>
-              <TableCell>1/26/2025</TableCell>
-              <TableCell>Pending</TableCell>
-              <TableCell>$234234</TableCell>
-              <TableCell>
-                <Dialog
-                  open={openOrderDetailsDialog}
-                  onOpenChange={setOpenDetailsDialog}
-                >
-                  <Button onClick={() => setOpenDetailsDialog(true)}>
-                    View Details
-                  </Button>
-                  <OrderDetailsModal />
-                </Dialog>
-              </TableCell>
-            </TableRow>
+            {orderList && orderList.length > 0
+              ? orderList.map((order) => (
+                  <TableRow key={order?._id}>
+                    <TableCell>{order?._id}</TableCell>
+                    <TableCell>{order?.orderDate.split("T")[0]}</TableCell>
+                    <TableCell>{order?.orderStatus}</TableCell>
+                    <TableCell>{order?.totalAmount}</TableCell>
+                    <TableCell>
+                      <Dialog
+                        open={openOrderDetailsDialog}
+                        onOpenChange={setOpenDetailsDialog}
+                      >
+                        <Button onClick={() => handleViewDetails(order?._id)}>
+                          View Details
+                        </Button>
+                        <OrderDetailsModal orderDetails={orderDetails} />
+                      </Dialog>
+                    </TableCell>
+                  </TableRow>
+                ))
+              : null}
           </TableBody>
         </Table>
       </CardContent>
