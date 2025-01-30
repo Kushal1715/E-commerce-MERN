@@ -10,11 +10,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { getAllOrders } from "@/store/admin/orderSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const AdminOrders = () => {
   const [openOrderDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const { orderList } = useSelector((state) => state.adminOrder);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllOrders());
+  }, [dispatch]);
+
+  console.log(orderList);
   return (
     <Card>
       <CardHeader>

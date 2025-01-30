@@ -17,9 +17,6 @@ const OrderDetailsModal = ({ orderDetails }) => {
     console.log(formData, "form submit");
   };
 
-  console.log(orderDetails, "details page");
-  console.log(user);
-
   return (
     <DialogContent className="sm:max-w-[600px]">
       <DialogTitle className="text-xl font-bold">Order Details</DialogTitle>
