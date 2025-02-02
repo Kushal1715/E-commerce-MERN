@@ -49,7 +49,6 @@ const adminOrderSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getAllOrders.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.isLoading = false;
         state.orderList = action.payload.data;
       })

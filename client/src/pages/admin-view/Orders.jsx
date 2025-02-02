@@ -28,7 +28,6 @@ const AdminOrders = () => {
     dispatch(getAllOrders());
   }, [dispatch]);
 
-  console.log(orderDetails);
   return (
     <Card>
       <CardHeader>
