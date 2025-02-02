@@ -1,3 +1,4 @@
+import ShoppingProductTile from "@/components/shopping-view/product-tile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { resetSearchProducts, searchProduct } from "@/store/shop/searchSlice";
@@ -40,6 +41,17 @@ const SearchProducts = () => {
           </Button>
         </div>
       </div>
+      {searchProducts.length > 0 ? (
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {searchProducts &&
+            searchProducts.length > 0 &&
+            searchProducts.map((product) => (
+              <ShoppingProductTile product={product} key={product._id} />
+            ))}
+        </div>
+      ) : (
+        <h1 className="text-center font-bold text-3xl mt-6">Not found</h1>
+      )}
     </div>
   );
 };
