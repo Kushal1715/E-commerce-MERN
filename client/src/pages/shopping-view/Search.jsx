@@ -1,6 +1,8 @@
+import ProductDetails from "@/components/shopping-view/product-details";
 import ShoppingProductTile from "@/components/shopping-view/product-tile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { fetchProductDetails } from "@/store/shop/productSlice";
 import { resetSearchProducts, searchProduct } from "@/store/shop/searchSlice";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +13,8 @@ const SearchProducts = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const { searchProducts } = useSelector((state) => state.shopSearch);
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const { productDetails } = useSelector((state) => state.shopProducts);
 
   const handleSearch = () => {
     console.log(keyword);
@@ -21,6 +25,11 @@ const SearchProducts = () => {
       setSearchParams(new URLSearchParams(`?keyword=${keyword}`));
       dispatch(resetSearchProducts());
     }
+  };
+
+  const handleProductDetails = (productId) => {
+    setOpenDetailsDialog(true);
+    dispatch(fetchProductDetails(productId));
   };
 
   console.log(searchProducts);
@@ -46,8 +55,17 @@ const SearchProducts = () => {
           {searchProducts &&
             searchProducts.length > 0 &&
             searchProducts.map((product) => (
-              <ShoppingProductTile product={product} key={product._id} />
+              <ShoppingProductTile
+                product={product}
+                key={product._id}
+                handleProductDetails={handleProductDetails}
+              />
             ))}
+          <ProductDetails
+            open={openDetailsDialog}
+            setOpen={setOpenDetailsDialog}
+            productDetails={productDetails}
+          />
         </div>
       ) : (
         <h1 className="text-center font-bold text-3xl mt-6">Not found</h1>
