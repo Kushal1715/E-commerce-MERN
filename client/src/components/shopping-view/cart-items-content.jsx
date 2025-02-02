@@ -12,7 +12,6 @@ function UserCartItemsContent({ cartItem }) {
   const { toast } = useToast();
 
   function handleCartItemDelete(getCartItem) {
-    console.log(getCartItem);
     dispatch(
       deleteCartItem({ userId: user?.id, productId: getCartItem?.productId })
     ).then((data) => {

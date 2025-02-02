@@ -2,6 +2,8 @@ import ProductDetails from "@/components/shopping-view/product-details";
 import ShoppingProductTile from "@/components/shopping-view/product-tile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { addToCart, fetchCartItems } from "@/store/shop/cartSlice";
 import { fetchProductDetails } from "@/store/shop/productSlice";
 import { resetSearchProducts, searchProduct } from "@/store/shop/searchSlice";
 import React, { useState } from "react";
@@ -15,6 +17,8 @@ const SearchProducts = () => {
   const { searchProducts } = useSelector((state) => state.shopSearch);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const { productDetails } = useSelector((state) => state.shopProducts);
+  const { user } = useSelector((state) => state.auth);
+  const { toast } = useToast();
 
   const handleSearch = () => {
     console.log(keyword);
@@ -32,7 +36,19 @@ const SearchProducts = () => {
     dispatch(fetchProductDetails(productId));
   };
 
-  console.log(searchProducts);
+  const handleAddToCart = (productId) => {
+    dispatch(addToCart({ userId: user.id, productId, quantity: 1 })).then(
+      (data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchCartItems(user?.id));
+          toast({
+            title: "Product added to cart successfully",
+          });
+        }
+      }
+    );
+  };
+
   return (
     <div className="p-6">
       <div className="w-[50%] mx-auto">
@@ -59,6 +75,7 @@ const SearchProducts = () => {
                 product={product}
                 key={product._id}
                 handleProductDetails={handleProductDetails}
+                handleAddtoCart={handleAddToCart}
               />
             ))}
           <ProductDetails
