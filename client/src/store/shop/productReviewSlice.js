@@ -7,7 +7,7 @@ const initialState = {
 };
 
 export const addReview = createAsyncThunk(
-  "/product/review",
+  "/product/review/add",
   async (formData) => {
     const response = await axios.post(
       "http://localhost:5000/api/shop/review/add",
@@ -18,11 +18,31 @@ export const addReview = createAsyncThunk(
   }
 );
 
+export const getReview = createAsyncThunk("/getreview", async (productId) => {
+  const response = await axios.get(
+    `http://localhost:5000/api/shop/review/get/${productId}`
+  );
+  return response?.data;
+});
+
 const ProductReviewSlice = createSlice({
   name: "Review",
   initialState,
   reducers: {},
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getReview.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getReview.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.reviews = action.payload.data;
+      })
+      .addCase(getReview.rejected, (state, action) => {
+        state.isLoading = false;
+        state.reviews = [];
+      });
+  },
 });
 
 export default ProductReviewSlice.reducer;
