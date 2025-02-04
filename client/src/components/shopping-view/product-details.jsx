@@ -27,6 +27,8 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
       }
     });
   };
+
+  console.log(productDetails);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
@@ -62,6 +64,16 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
                 ${productDetails?.salePrice}
               </p>
             ) : null}
+          </div>
+          <div className="flex items-center gap-2 mt-3">
+            <div className="flex items-center">
+              <StarIcon className="fill-black" />
+              <StarIcon className="fill-black" />
+              <StarIcon className="fill-black" />
+              <StarIcon className="fill-black" />
+              <StarIcon className="fill-black" />
+            </div>
+            <span>({productDetails?.averageReview})</span>
           </div>
           <div className="mt-5 mb-5">
             <Button
