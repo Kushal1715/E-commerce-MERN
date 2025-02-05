@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
@@ -13,6 +13,7 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
   const { toast } = useToast();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const [starRating, setStarRating] = useState(0);
 
   const handleAddToCart = (currentProductId) => {
     dispatch(
@@ -26,6 +27,10 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
         dispatch(fetchCartItems(user.id));
       }
     });
+  };
+
+  const handleStarRating = (ratingNumber) => {
+    setStarRating(ratingNumber);
   };
 
   console.log(productDetails);
@@ -94,7 +99,7 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
                 <div className="flex flex-col gap-1">
                   <h2 className="font-bold text-lg">Kushal Khadka</h2>
                   <div className="flex items-center gap-1">
-                    <StarIcon variant="black" />
+                    <StarIcon fill="black" />
                     <StarIcon />
                     <StarIcon />
                     <StarIcon />
@@ -105,8 +110,21 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
                   </span>
                 </div>
               </div>
+              <div className="mt-5">
+                <h1 className="font-bold text-xl mb-2">Write a Review</h1>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((number) => (
+                    <StarIcon
+                      className={`w-8 h-8 cursor-pointer`}
+                      key={number}
+                      onClick={() => handleStarRating(number)}
+                      fill={number <= starRating ? "yellow" : "white"}
+                    />
+                  ))}
+                </div>
+              </div>
 
-              <div className="flex gap-2 mt-5 mb-5">
+              <div className="flex gap-2 mt-3 mb-5">
                 <Input placeholder="Write a review" type="text" />
                 <Button>Submit</Button>
               </div>
