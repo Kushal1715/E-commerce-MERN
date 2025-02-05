@@ -8,12 +8,14 @@ import { Input } from "../ui/input";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, fetchCartItems } from "@/store/shop/cartSlice";
 import { useToast } from "@/hooks/use-toast";
+import { addReview } from "@/store/shop/productReviewSlice";
 
 const ProductDetails = ({ open, setOpen, productDetails }) => {
   const { toast } = useToast();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const [starRating, setStarRating] = useState(0);
+  const [reviewMsg, setReviewMsg] = useState("");
 
   const handleAddToCart = (currentProductId) => {
     dispatch(
@@ -31,7 +33,22 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
 
   const handleStarRating = (ratingNumber) => {
     setStarRating(ratingNumber);
+    console.log(ratingNumber);
   };
+
+  const handleReview = (currentProductId) => {
+    dispatch(
+      addReview({
+        productId: currentProductId,
+        userId: user.id,
+        userName: user.userName,
+        reviewMessage: reviewMsg,
+        reviewValue: starRating,
+      })
+    ).then((data) => console.log(data));
+  };
+
+  console.log(reviewMsg);
 
   console.log(productDetails);
   return (
@@ -115,7 +132,7 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
                 <div className="flex items-center gap-2">
                   {[1, 2, 3, 4, 5].map((number) => (
                     <StarIcon
-                      className={`w-8 h-8 cursor-pointer`}
+                      className={`w-8 h-8 cursor-pointer hover:bg-yellow-400`}
                       key={number}
                       onClick={() => handleStarRating(number)}
                       fill={number <= starRating ? "yellow" : "white"}
@@ -125,8 +142,15 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
               </div>
 
               <div className="flex gap-2 mt-3 mb-5">
-                <Input placeholder="Write a review" type="text" />
-                <Button>Submit</Button>
+                <Input
+                  placeholder="Write a review"
+                  type="text"
+                  value={reviewMsg}
+                  onChange={(e) => setReviewMsg(e.target.value)}
+                />
+                <Button onClick={() => handleReview(productDetails?._id)}>
+                  Submit
+                </Button>
               </div>
             </div>
           </div>
