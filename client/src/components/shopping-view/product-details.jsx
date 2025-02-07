@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart, fetchCartItems } from "@/store/shop/cartSlice";
 import { useToast } from "@/hooks/use-toast";
 import { addReview } from "@/store/shop/productReviewSlice";
+import { fetchProductDetails } from "@/store/shop/productSlice";
 
 const ProductDetails = ({ open, setOpen, productDetails }) => {
   const { toast } = useToast();
@@ -37,15 +38,20 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
   };
 
   const handleReview = (currentProductId) => {
+    console.log(currentProductId);
     dispatch(
       addReview({
         productId: currentProductId,
-        userId: user.id,
-        userName: user.userName,
+        userId: user?.id,
+        userName: user?.userName,
         reviewMessage: reviewMsg,
         reviewValue: starRating,
       })
-    ).then((data) => console.log(data));
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchProductDetails(currentProductId));
+      }
+    });
   };
 
   console.log(reviewMsg);

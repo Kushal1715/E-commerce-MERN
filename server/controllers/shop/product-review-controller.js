@@ -8,24 +8,27 @@ const addProductReview = async (req, res) => {
       req.body;
 
     const order = await Order.findOne({
-      userId: userId,
+      userId,
       "cartItems.productId": productId,
-      // orderStatus: "confirmed",
+      // orderStatus: "confirmed" || "delivered",
     });
 
     if (!order) {
       return res.status(403).json({
         success: false,
-        message: "purchase product to review it",
+        message: "You need to purchase product to review it.",
       });
     }
 
-    const existingReview = await ProductReview.findOne({ userId, productId });
+    const checkExistinfReview = await ProductReview.findOne({
+      productId,
+      userId,
+    });
 
-    if (existingReview) {
+    if (checkExistinfReview) {
       return res.status(400).json({
         success: false,
-        message: "You have already reviewed",
+        message: "You already reviewed this product!",
       });
     }
 
@@ -36,27 +39,26 @@ const addProductReview = async (req, res) => {
       reviewMessage,
       reviewValue,
     });
+
     await newReview.save();
 
     const reviews = await ProductReview.find({ productId });
-    const totalReviews = reviews.length;
+    const totalReviewsLength = reviews.length;
     const averageReview =
-      reviews.reduce((sum, productReview) => {
-        sum + productReview.reviewValue;
-      }, 0) / totalReviews;
+      reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) /
+      totalReviewsLength;
 
-    await Product.findByIdAndUpdate(productId, {
-      averageReview,
-    });
+    await Product.findByIdAndUpdate(productId, { averageReview });
 
     res.status(201).json({
       success: true,
       data: newReview,
     });
   } catch (e) {
-    return res.status(500).json({
+    console.log(e);
+    res.status(500).json({
       success: false,
-      message: "something went wrong",
+      message: "Error",
     });
   }
 };
