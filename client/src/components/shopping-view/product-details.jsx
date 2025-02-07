@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { StarIcon } from "lucide-react";
+import { Star, StarIcon } from "lucide-react";
 import { Input } from "../ui/input";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, fetchCartItems } from "@/store/shop/cartSlice";
 import { useToast } from "@/hooks/use-toast";
-import { addReview } from "@/store/shop/productReviewSlice";
+import { addReview, getReview } from "@/store/shop/productReviewSlice";
 import { fetchProductDetails } from "@/store/shop/productSlice";
 
 const ProductDetails = ({ open, setOpen, productDetails }) => {
@@ -17,6 +17,7 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
   const { user } = useSelector((state) => state.auth);
   const [starRating, setStarRating] = useState(0);
   const [reviewMsg, setReviewMsg] = useState("");
+  const { reviews } = useSelector((state) => state.review);
 
   const handleAddToCart = (currentProductId) => {
     dispatch(
@@ -50,13 +51,19 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
     ).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchProductDetails(currentProductId));
+        setStarRating(0);
+        setReviewMsg("");
+        dispatch(getReview(currentProductId));
       }
     });
   };
 
-  console.log(reviewMsg);
+  useEffect(() => {
+    dispatch(getReview(productDetails?._id));
+  }, [productDetails?._id]);
 
-  console.log(productDetails);
+  console.log(productDetails?._id);
+  console.log(reviews);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
@@ -114,50 +121,68 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
           <Separator />
           <div>
             <h1 className="font-bold text-xl mb-5">Reviews</h1>
-            <div className=" max-h-[250px] overflow-auto">
-              <div className="flex gap-3">
-                <Avatar>
-                  <AvatarFallback>KK</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col gap-1">
-                  <h2 className="font-bold text-lg">Kushal Khadka</h2>
-                  <div className="flex items-center gap-1">
-                    <StarIcon fill="black" />
-                    <StarIcon />
-                    <StarIcon />
-                    <StarIcon />
-                    <StarIcon />
-                  </div>
-                  <span className="text-muted-foreground">
-                    This is an awesome product
-                  </span>
-                </div>
-              </div>
-              <div className="mt-5">
-                <h1 className="font-bold text-xl mb-2">Write a Review</h1>
-                <div className="flex items-center gap-2">
-                  {[1, 2, 3, 4, 5].map((number) => (
-                    <StarIcon
-                      className={`w-8 h-8 cursor-pointer hover:bg-yellow-400`}
-                      key={number}
-                      onClick={() => handleStarRating(number)}
-                      fill={number <= starRating ? "yellow" : "white"}
-                    />
-                  ))}
-                </div>
-              </div>
+            <div className="flex flex-col">
+              {reviews && reviews.length > 0
+                ? reviews.map((review) => (
+                    <div className=" max-h-[250px] overflow-auto">
+                      <div className="flex gap-3">
+                        <Avatar>
+                          <AvatarFallback>
+                            {review?.userName[0].toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col gap-1">
+                          <h2 className="font-bold text-lg">
+                            {review?.userName}
+                          </h2>
+                          <div className="flex items-center gap-1">
+                            {[1, 2, 3, 4, 5].map((rating) => (
+                              <StarIcon
+                                fill={
+                                  rating <= review?.reviewValue
+                                    ? "yellow"
+                                    : "white"
+                                }
+                              />
+                            ))}
+                          </div>
+                          <span className="text-muted-foreground">
+                            {review?.reviewMessage}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="font-bold text-xl mb-2">
+                          Write a Review
+                        </h1>
+                        <div className="flex items-center gap-2">
+                          {[1, 2, 3, 4, 5].map((number) => (
+                            <StarIcon
+                              className={`w-8 h-8 cursor-pointer hover:bg-yellow-400`}
+                              key={number}
+                              onClick={() => handleStarRating(number)}
+                              fill={number <= starRating ? "yellow" : "white"}
+                            />
+                          ))}
+                        </div>
+                      </div>
 
-              <div className="flex gap-2 mt-3 mb-5">
-                <Input
-                  placeholder="Write a review"
-                  type="text"
-                  value={reviewMsg}
-                  onChange={(e) => setReviewMsg(e.target.value)}
-                />
-                <Button onClick={() => handleReview(productDetails?._id)}>
-                  Submit
-                </Button>
-              </div>
+                      <div className="flex gap-2 mt-3 mb-5">
+                        <Input
+                          placeholder="Write a review"
+                          type="text"
+                          value={reviewMsg}
+                          onChange={(e) => setReviewMsg(e.target.value)}
+                        />
+                        <Button
+                          onClick={() => handleReview(productDetails?._id)}
+                        >
+                          Submit
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                : null}
             </div>
           </div>
         </div>
