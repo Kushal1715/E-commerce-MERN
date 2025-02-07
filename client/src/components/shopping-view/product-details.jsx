@@ -39,7 +39,6 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
   };
 
   const handleReview = (currentProductId) => {
-    console.log(currentProductId);
     dispatch(
       addReview({
         productId: currentProductId,
@@ -49,11 +48,16 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
         reviewValue: starRating,
       })
     ).then((data) => {
+      console.log(data);
       if (data?.payload?.success) {
         dispatch(fetchProductDetails(currentProductId));
         setStarRating(0);
         setReviewMsg("");
         dispatch(getReview(currentProductId));
+      } else {
+        toast({
+          title: "You have already reviewed this product",
+        });
       }
     });
   };
@@ -102,11 +106,15 @@ const ProductDetails = ({ open, setOpen, productDetails }) => {
           </div>
           <div className="flex items-center gap-2 mt-3">
             <div className="flex items-center">
-              <StarIcon className="fill-black" />
-              <StarIcon className="fill-black" />
-              <StarIcon className="fill-black" />
-              <StarIcon className="fill-black" />
-              <StarIcon className="fill-black" />
+              {[1, 2, 3, 4, 5].map((rating) => (
+                <StarIcon
+                  fill={
+                    rating <= Math.floor(productDetails?.averageReview)
+                      ? "yellow"
+                      : "white"
+                  }
+                />
+              ))}
             </div>
             <span>({productDetails?.averageReview})</span>
           </div>
